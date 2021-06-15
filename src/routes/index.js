@@ -2,7 +2,7 @@ const { json } = require("body-parser");
 const express = require("express");
 const fetch = require("node-fetch");
 const ODDS = require("../database/Odds.json");
-const marketGames = require("../database/MatchGame.json");
+const marketGames = require("../database/FileFromMarketGames.json");
 const { urlencoded } = require("express");
 const Router = express.Router();
 
@@ -31,27 +31,58 @@ function cleanJsonOdds(myJsonOdds) {
 
 function compareJsonOddsAndMarket(odds, market) {
 
-    for (let i = 0; i < odds.length; i++) {
-        for (let j = 0; j < market.length; j++) {
-            if (odds[i].market_id == market[j]) {
-                finalJson.push({ market_name: market[j].name, })
-            }
-        }
+    var temp_market_id = 0;
 
-    }
+    odds.forEach(elementOne => {
+        market.forEach(elementTwo => {
+            if ( temp_market_id == 0 && elementOne.market_id == elementTwo.id) {
+                
+                finalJson.push({
+                    id: elementTwo.id,
+                    market_name: elementTwo.name, 
+                    odds: {
+                        id: elementOne.id,
+                        odd_name: elementOne.selection_name,
+                        odd_origin: elementOne.odd_origin,
+                        selection_id: elementOne.selection_id
+                    },
+                    
+                })
+                
+                temp_market_id = elementOne.market_id;
+
+            }else if (temp_market_id == elementOne.market_id ) {
+
+                
+                finalJson[elementOne].odds[elementTwo].push({
+                    id: elementOne.id,
+                    odd_name: elementOne.selection_name,
+                    odd_origin: elementOne.odd_origin,
+                    selection_id: elementOne.selection_id
+                });
+
+                temp_market_id = elementOne.market_id;  
+            } 
+        });
+    });
+
+    
 }
 
 Router.get("/", (req, res) => {
+
+
+    
     //funcion que limpia el JSON de ODDS
     cleanJsonOdds(ODDS.data);
 
+    //console.log(activeMatch);
     //Funcion que compara los objetos del odds y marketGames
-    compareJsonOddsAndMarket(activeMatch, marketGames.data)
+    //compareJsonOddsAndMarket(activeMatch, marketGames.data)
 
-    console.log(finalJson);
+    console.log(finalJson.);
     res.render("index.ejs", {
-        activeMatch,
-        marketGames,
+        finalJson
     });
 });
 
