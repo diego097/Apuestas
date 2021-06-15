@@ -1,0 +1,34 @@
+<div class="col-md-12">
+    <div class="card">
+
+        <%  ODDS.data.forEach(element => { %>
+            <table class="table">
+
+                <h2 class="text-center">
+                    <%= element.selection_name%>
+                </h2>
+                <thead>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row"> </th>
+                        <td>
+                            <%= element.selection_name%>
+                        </td>
+                        <td>
+                            <%= element.odd_quota%>
+                        </td>
+                        <td>
+                            <%= element.selection_name%>
+                        </td>
+                        <td>
+                            <%= element.odd_quota%>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <% }) %>
+    </div>
+</div>
