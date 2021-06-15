@@ -6,54 +6,51 @@ const marketGames = require("../database/MatchGame.json");
 const { urlencoded } = require("express");
 const Router = express.Router();
 
-
 const activeMatch = [];
 const finalJson = [];
 
-
 function cleanJsonOdds(myJsonOdds) {
-
     myJsonOdds.forEach((element) => {
-
-
         if (
             element.status == "OP" ||
             element.status == "TD" ||
             element.status == "TDM"
         ) {
-
-
-            activeMatch.push({ id: element.id, market_id: element.market_id, selection_id: element.selection_id, selection_name: element.selection_name, odd_quota: element.odd_quota, odd_origin: element.odd_origin, status: element.status });
-
+            activeMatch.push({
+                id: element.id,
+                market_id: element.market_id,
+                selection_id: element.selection_id,
+                selection_name: element.selection_name,
+                odd_quota: element.odd_quota,
+                odd_origin: element.odd_origin,
+                status: element.status,
+            });
         }
-
     });
 }
 
 function compareJsonOddsAndMarket(odds, market) {
 
-    market.forEach(elementOne => {
-        odds.forEach(elementTwo => {
-            if (elementOne.id == elementTwo.market_id) {
-                finalJson.push[{}]
+    for (let i = 0; i < odds.length; i++) {
+        for (let j = 0; j < market.length; j++) {
+            if (odds[i].market_id == market[j]) {
+                finalJson.push({ market_name: market[j].name, })
             }
-        });
-    });
+        }
 
+    }
 }
 
 Router.get("/", (req, res) => {
-
-
     //funcion que limpia el JSON de ODDS
-    cleanJsonOdds(ODDS.data)
+    cleanJsonOdds(ODDS.data);
 
     //Funcion que compara los objetos del odds y marketGames
+    compareJsonOddsAndMarket(activeMatch, marketGames.data)
 
-
-    console.log(activeMatch);
+    console.log(finalJson);
     res.render("index.ejs", {
-        ODDS,
+        activeMatch,
         marketGames,
     });
 });
